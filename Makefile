@@ -1,10 +1,16 @@
 CC=gcc
-INCDIR=-I../dyad-master/include
-LIBDIR=-L../dyad-master/lib
+INCDIR=-I.
+LIBDIR=-L.
 CFLAGS=-Wall -g
 LDFLAGS=-ldyad -lpthread
 
-all: server client
+all: libdyad.a server client
+
+libdyad.a: dyad.o
+	ar rcs libdyad.a dyad.o
+
+dyad.o: dyad.c dyad.h
+	$(CC) -c dyad.c -o dyad.o
 
 server: server.c
 	$(CC) server.c -o server $(INCDIR) $(LIBDIR) $(LDFLAGS) $(CFLAGS)
@@ -15,4 +21,4 @@ client: client.c
 .PHONY: clean
 
 clean:
-	rm client server
+	rm client server dyad.o libdyad.a
