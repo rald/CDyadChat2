@@ -4,11 +4,12 @@
 
 #include "dyad.h"
 
+#define STRING_MAX 256
+
 void *threadFunction(void *arg) {
-	char *line=NULL;
-	int lineLen=0;
+	char line[STRING_MAX];
 	for(;;) {
-		getline(&line,&lineLen,stdin);
+		fgets(line,STRING_MAX,stdin);
 		char *p=strrchr(line,'\n'); if(p) *p='\0';
 		dyad_writef((dyad_Stream*)arg,"%s\n",line);
 	}
@@ -41,7 +42,7 @@ int main(void) {
   dyad_addListener(s, DYAD_EVENT_ERROR,   onError,   NULL);
   dyad_addListener(s, DYAD_EVENT_LINE,    onLine,    NULL);
   dyad_addListener(s, DYAD_EVENT_CLOSE,   onClose,   NULL);
-  dyad_connect(s, "127.0.0.1", 14344);
+  dyad_connect(s, "198.251.81.133", 5254);
 
   while (dyad_getStreamCount() > 0) {
     dyad_update();

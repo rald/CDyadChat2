@@ -1,10 +1,16 @@
+CC=gcc
+INCDIR=-I../dyad-master/include
+LIBDIR=-L../dyad-master/lib
+CFLAGS=-Wall -g
+LDFLAGS=-ldyad -lpthread
+
 all: server client
 
 server: server.c
-	gcc server.c -o server -ldyad -lpthread
+	$(CC) server.c -o server $(INCDIR) $(LIBDIR) $(LDFLAGS) $(CFLAGS)
 
 client: client.c
-	gcc client.c -o client -ldyad -lpthread
+	$(CC) client.c -o client $(INCDIR) $(LIBDIR) $(LDFLAGS) $(CFLAGS)
 
 .PHONY: clean
 

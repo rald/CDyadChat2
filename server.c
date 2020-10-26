@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "dyad.h"
 
@@ -8,9 +9,10 @@
 dyad_Stream *clients[CLIENT_MAX];
 
 static void broadcast(const char *fmt,...) {
+	int i;
 	va_list args;
 	va_start(args,fmt);
-	for(int i=0;i<CLIENT_MAX;i++) {
+	for(i=0;i<CLIENT_MAX;i++) {
 		if(clients[i]) {
 		  dyad_vwritef(clients[i],fmt,args);
 		}
@@ -55,13 +57,15 @@ static void onAccept(dyad_Event *e) {
 
 int main(void) {
 
-	for(int i=0;i<CLIENT_MAX;i++) clients[i]=NULL;
+	int i;
+
+	for(i=0;i<CLIENT_MAX;i++) clients[i]=NULL;
 
   dyad_init();
 
   dyad_Stream *s = dyad_newStream();
   dyad_addListener(s, DYAD_EVENT_ACCEPT,  onAccept,  NULL);
-  dyad_listen(s, 14344);
+  dyad_listen(s, 5254);
 
   while (dyad_getStreamCount() > 0) {
     dyad_update();
