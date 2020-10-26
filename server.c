@@ -6,18 +6,26 @@
 
 #define CLIENT_MAX 3
 
+#define STRING_MAX 256
+
 dyad_Stream *clients[CLIENT_MAX];
 
 static void broadcast(const char *fmt,...) {
-	int i;
 	va_list args;
+	char buf[STRING_MAX];
+	int i;
+	
+	buf[0]='\0';
 	va_start(args,fmt);
+	vsnprintf(buf,STRING_MAX,fmt,args);
+	va_end(args);
+
 	for(i=0;i<CLIENT_MAX;i++) {
 		if(clients[i]) {
-		  dyad_vwritef(clients[i],fmt,args);
+		  dyad_writef(clients[i],"%s",buf);
 		}
 	}
-	va_end(args);
+
 }
 
 static void onLine(dyad_Event *e) {
@@ -34,15 +42,17 @@ static void onClose(dyad_Event *e) {
 
 static void onAccept(dyad_Event *e) {
 	int i,j;
+	
 	j=-1;
   for(i=0;i<CLIENT_MAX;i++) {
-		if(!clients[i]) {
+		if(clients[i]==NULL) {
 			j=i;
 			break;
 		}
 	}
+
 	if(j!=-1) {
-		clients[i]=e->remote;
+		clients[j]=e->remote;
 		int *k=malloc(sizeof(int));
 		*k=j;
 	  dyad_addListener(e->remote, DYAD_EVENT_LINE,    onLine,    k);
