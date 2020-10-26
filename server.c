@@ -11,21 +11,15 @@
 dyad_Stream *clients[CLIENT_MAX];
 
 static void broadcast(const char *fmt,...) {
-	va_list args;
-	char buf[STRING_MAX];
 	int i;
-	
-	buf[0]='\0';
-	va_start(args,fmt);
-	vsnprintf(buf,STRING_MAX,fmt,args);
-	va_end(args);
-
+	va_list args;
 	for(i=0;i<CLIENT_MAX;i++) {
 		if(clients[i]) {
-		  dyad_writef(clients[i],"%s",buf);
+			va_start(args,fmt);
+		  dyad_vwritef(clients[i],fmt,args);
+			va_end(args);
 		}
 	}
-
 }
 
 static void onLine(dyad_Event *e) {
